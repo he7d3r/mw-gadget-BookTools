@@ -150,7 +150,16 @@ function saveChaptersList( context ){
 		editPage(pagina, texto);
 	}
 }
-
+function saveCollection( context ){
+	var	pagina = 'Wikilivros:Livros/' + mw.config.get( 'wgPageName' ),
+		texto = context.$target.val(), r;
+		r = confirm('Antes de criar a coleção é preciso conferir' +
+			' se a lista gerada pelo script está correta.\n\nDeseja' +
+			' que a lista seja criada com o texto atual?');
+	if (r===true) {
+		editPage(pagina, texto);
+	}
+}
 function load(){
 	pathoschild.TemplateScript.AddWith({
 		forActions: 'edit',
@@ -161,6 +170,9 @@ function load(){
 	}, {
 		name: 'Gerar coleção',
 		script: createCollectionPage
+	}, {
+		name: 'Gravar coleção (CUIDADO!)',
+		script: saveCollection
 	}, {
 		name: 'Gerar versão para impressão',
 		script: createPrintVersion
