@@ -9,11 +9,37 @@
 ( function ( mw, $ ) {
 'use strict';
 
-var bookName = mw.config.get( 'wgPageName' ).replace(/_/g,' ');
+mw.messages.set( {
+	'bt-removed-lines': 'Foram removidas $1 linhas duplicadas',
+	'bt-no-duplicates': 'Não havia linhas duplicadas',
+	'bt-create-list-summary': 'Criação da lista com base no [[$1|índice do livro]]',
+	'bt-page-edited': 'A página "$1" foi editada e será exibida a seguir.',
+	'bt-page-not-edited': 'Não foi possível editar a página "$1".',
+	'bt-check-list': 'Antes de criar a lista de capítulos é preciso conferir' +
+		' se a lista gerada pelo script está correta.\n\nDeseja' +
+		' que a lista seja criada com o texto atual?',
+	'bt-check-list-for-collection': 'Antes de criar a coleção é preciso conferir' +
+		' se a lista gerada pelo script está correta.\n\nDeseja' +
+		' que a lista seja criada com o texto atual?',
+	'bt-sidebar-title': 'Gerenciador de livros',
+	'bt-create-template-desc': 'Gerar lista de capítulos',
+	'bt-create-collection-desc': 'Gerar coleção',
+	'bt-create-print-version-desc': 'Gerar versão para impressão',
+	'bt-create-autonav-desc': 'TEST: Criar AutoNav',
+	'bt-save-collection-desc': 'Gravar coleção (CUIDADO!)',
+	'bt-save-list-desc': 'Gravar lista de capítulos (CUIDADO!)'
+} );
 
+var bookName = mw.config.get( 'wgPageName' ).replace(/_/g,' '),
+	reLinkCap = new RegExp(
+		'.*\\[\\[\\s*(?:/([^\\|\\]]+?)/?|' +
+			$.escapeRE( bookName ) +
+			'/([^\\|\\]]+?))\\s*(?:(?:#[^\\|\\]]+?)?\\|\\s*[^\\]]+?\\s*)?\\]\\].*',
+		'gi'
+	);
 // Adaptação de um script de Paul Galloway (http://www.synergyx.com)
 function dedupeList( items ){
-	var	i, l,
+	var i, l,
 		count = 0,
 		newlist = [],
 		hash = {};
@@ -29,15 +55,15 @@ function dedupeList( items ){
 		}
 	}
 	if( count > 0 ) {
-		alert( 'Foram removidas ' + count + ' linhas duplicadas' );
+		alert( mw.msg( 'bt-removed-lines', count ) );
 	} else {
-		alert( 'Não havia linhas duplicadas' );
+		alert( mw.msg( 'bt-no-duplicates' ) );
 	}
 	return newlist;
 }
 
 function createAutoNav( context ){
-	var	list = context.$target.val().split('\n'),
+	var list = context.$target.val().split('\n'),
 		previous = [],
 		next = [],
 		i;
@@ -60,31 +86,28 @@ function createAutoNav( context ){
 // As funções parseLine e createList foram baseadas nas funções loadCollection e parseCollectionLine da extensão collection
 // http://svn.wikimedia.org/viewvc/mediawiki/trunk/extensions/Collection/Collection.body.php?view=markup
 function parseLine( line ){
-	var reLinkCap = new RegExp( '.*\\[\\[\\s*(?:/([^\\|\\]]+?)/?|' +
-		$.escapeRE( bookName ) +
-		'/([^\\|\\]]+?))\\s*(?:(?:#[^\\|\\]]+?)?\\|\\s*[^\\]]+?\\s*)?\\]\\].*', 'gi' );
 	if( reLinkCap.test( line ) ){
-		line = line.replace( reLinkCap, '$1$2' ).replace(/^\s+|\s+$/g, '');
-	} else {
-		line = '';
+		return $.trim( line.replace( reLinkCap, '$1$2' ) );
 	}
-	return line;
+	return false;
 }
 
 function createList( context ){
-	var	lines = context.$target.val().split(/[\r\n]+/),
+	var i, cap,
 		list = [],
-		i, cap;
-	lines = lines.slice( 1, lines.length - 1 );
+		lines = context.$target.val().split(/[\r\n]+/);
+	// lines = lines.slice( 1, lines.length - 1 );
 	for ( i = 0; i < lines.length; i++) {
 		cap = parseLine( lines[ i ] );
-		if ( cap !== '' ) { list.push( cap ); }
+		if ( cap ) {
+			list.push( cap );
+		}
 	}
 	return list;
 }
 
 function createTemplate( context ){
-	var	list = dedupeList( createList( context ) ),
+	var list = dedupeList( createList( context ) ),
 		predef = '<includeonly>{'+'{{{{|safesubst:}}}Lista de capítulos/{{{1|}}}</includeonly>\n |'
 			+ list.join( '\n |' )
 			+ '\n<includeonly>}}</includeonly><noinclude>\n'
@@ -95,45 +118,47 @@ function createTemplate( context ){
 }
 
 // Baseado em [[w:en:WP:WikiProject User scripts/Guide/Ajax#Edit a page and other common actions]]
-function editPage(pagina, texto) {
-	// Edit page (must be done through POST)
+function editPage(page, texto) {
 	$.post(
 		mw.util.wikiScript( 'api' ), {
 			action: 'edit',
 			bot: '1',
-			title: pagina,
+			title: page,
 			text: texto,
-			summary: 'Criação da lista com base no [[' + mw.config.get( 'wgBookName' ) +
-				'|índice do livro]] (usando regex)',
+			summary: mw.msg( 'bt-create-list-summary', mw.config.get( 'wgBookName' ) ),
 			token: mw.user.tokens.get( 'editToken' )
 		}
 	)
 	.done(function() {
-		alert('A página "' + pagina.replace(/_/g, ' ') + '" foi editada e será exibida a seguir.');
-		location.href = mw.util.wikiGetlink( pagina );
+		alert( mw.msg( 'bt-page-edited', page.replace( /_/g, ' ' ) ) );
+		location.href = mw.util.wikiGetlink( page );
 	})
 	.fail(function() {
-		alert( 'Não foi possível editar a página. =(' );
+		alert( mw.msg( 'bt-page-not-edited', page.replace( /_/g, ' ' ) ) );
 	});
-}// editPage
+}
 
 function createCollectionPage( context ){
-	var	list = dedupeList( createList( context ) ), i,
+	var i, pos,
+		list = dedupeList( createList( context ) ),
 		col = '{'+'{Livro gravado\n |título={'
 			+'{subst:SUBPAGENAME}}\n |subtítulo=\n |imagem da capa=\n'
 			+' |cor da capa=\n}}\n\n== ' + bookName + ' ==\n';
-	for ( i = 0; i < list.length; i++) {
+	for ( i = 0; i < list.length; i++ ) {
+		pos = list[ i ].lastIndexOf('/') + 1;
 		col += ':[[' + bookName + '/' + list[ i ] + '|'
-			+ list[ i ].replace( /^.+\//g, '' ) + ']]\n';
+			+ list[ i ].substring( pos ) + ']]\n';
 	}
 	context.$target.val( col );
 }
 
 function createPrintVersion( context ){
-	var	list = dedupeList( createList( context ) ), i,
+	var i, pos,
+		list = dedupeList( createList( context ) ),
 		imp = '{'+'{Versão para impressão|{{BASEPAGENAME}}|{{BASEPAGENAME}}/Imprimir}}\n';
 	for ( i = 0; i < list.length; i++) {
-		imp += '=' + list[ i ].replace( /^.+\//g, '' )
+		pos = list[ i ].lastIndexOf('/') + 1;
+		imp += '=' + list[ i ].substring( pos )
 			+ '=\n{' + '{:{' + '{NOMEDOLIVRO}}/' + list[ i ] + '}}\n';
 	}
 	imp += '\n{' + '{AutoCat}}';
@@ -141,46 +166,42 @@ function createPrintVersion( context ){
 }
 
 function saveChaptersList( context ){
-	var	pagina = 'Predefinição:Lista_de_capítulos/' + mw.config.get( 'wgPageName' ),
-		texto = context.$target.val(), r;
-		r = confirm('Antes de criar a lista de capítulos é preciso conferir' +
-			' se a lista gerada pelo script está correta.\n\nDeseja' +
-			' que a lista seja criada com o texto atual?');
+	var r, listPage = 'Predefinição:Lista_de_capítulos/' + mw.config.get( 'wgPageName' ),
+		texto = context.$target.val();
+	r = confirm( mw.msg( 'bt-check-list' ) );
 	if (r===true) {
-		editPage(pagina, texto);
+		editPage(listPage, texto);
 	}
 }
 function saveCollection( context ){
-	var	pagina = 'Wikilivros:Livros/' + mw.config.get( 'wgPageName' ),
-		texto = context.$target.val(), r;
-		r = confirm('Antes de criar a coleção é preciso conferir' +
-			' se a lista gerada pelo script está correta.\n\nDeseja' +
-			' que a lista seja criada com o texto atual?');
+	var r, collectionPage = 'Wikilivros:Livros/' + mw.config.get( 'wgPageName' ),
+		texto = context.$target.val();
+	r = confirm( mw.msg( 'bt-check-list-for-collection' ) );
 	if (r===true) {
-		editPage(pagina, texto);
+		editPage(collectionPage, texto);
 	}
 }
 function load(){
 	pathoschild.TemplateScript.AddWith({
 		forActions: 'edit',
-		category: 'Gerenciador de livros'
+		category: mw.msg( 'bt-sidebar-title' )
 	},[{
-		name: 'Gerar lista de capítulos',
+		name: mw.msg( 'bt-create-template-desc' ),
 		script: createTemplate
 	}, {
-		name: 'Gerar coleção',
+		name: mw.msg( 'bt-create-collection-desc' ),
 		script: createCollectionPage
 	}, {
-		name: 'Gravar coleção (CUIDADO!)',
+		name: mw.msg( 'bt-save-collection-desc' ),
 		script: saveCollection
 	}, {
-		name: 'Gerar versão para impressão',
+		name: mw.msg( 'bt-create-print-version-desc' ),
 		script: createPrintVersion
 	}, {
-		name: 'Gravar lista de capítulos (CUIDADO!)',
+		name: mw.msg( 'bt-save-list-desc' ),
 		script: saveChaptersList
 	}, {
-		name: 'TEST: Criar AutoNav',
+		name: mw.msg( 'bt-create-autonav-desc' ),
 		script: createAutoNav
 	}]);
 }
