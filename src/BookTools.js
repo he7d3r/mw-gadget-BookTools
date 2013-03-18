@@ -95,7 +95,9 @@ function parseLine( line ){
 function createList( context ){
 	var i, cap,
 		list = [],
-		lines = context.$target.val().split(/[\r\n]+/);
+		lines = context.$target.val()
+			.replace( /<!--[\s\S]+?-->/g, '' )
+			.split( /[\r\n]+/ );
 	// lines = lines.slice( 1, lines.length - 1 );
 	for ( i = 0; i < lines.length; i++) {
 		cap = parseLine( lines[ i ] );
