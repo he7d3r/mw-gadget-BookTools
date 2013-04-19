@@ -109,13 +109,15 @@ function createList( context ){
 }
 
 function createTemplate( context ){
+	// <nowiki>
 	var list = dedupeList( createList( context ) ),
-		predef = '<include' + 'only>{' + '{{{{|safesubst:}}}Lista de capítulos/{{{1|}}}</include' + 'only>\n |'
+		predef = '<includeonly>{{{{{|safesubst:}}}Lista de capítulos/{{{1|}}}</includeonly>\n |'
 			+ list.join( '\n |' )
-			+ '\n<include' + 'only>}}</include' + 'only><no' + 'include>\n'
-			+ '{' + '{Documentação|Predefinição:Lista de capítulos/doc}}\n'
+			+ '\n<includeonly>}}</includeonly><noinclude>\n'
+			+ '{{Documentação|Predefinição:Lista de capítulos/doc}}\n'
 			+ '<!-- ADICIONE CATEGORIAS E INTERWIKIS NA SUBPÁGINA /doc -->\n'
-			+ '</no' + 'include>';
+			+ '</noinclude>';
+	// </nowiki>
 	context.$target.val( predef );
 }
 
@@ -156,14 +158,16 @@ function createCollectionPage( context ){
 
 function createPrintVersion( context ){
 	var i, pos,
+		// <nowiki>
 		list = dedupeList( createList( context ) ),
-		imp = '{'+'{Versão para impressão|{{BASEPAGENAME}}|{{BASEPAGENAME}}/Imprimir}}\n';
+		imp = '{{Versão para impressão|{{BASEPAGENAME}}|{{BASEPAGENAME}}/Imprimir}}\n';
 	for ( i = 0; i < list.length; i++) {
 		pos = list[ i ].lastIndexOf('/') + 1;
 		imp += '=' + list[ i ].substring( pos )
-			+ '=\n{' + '{:{' + '{NOMEDOLIVRO}}/' + list[ i ] + '}}\n';
+			+ '=\n{{:{{NOMEDOLIVRO}}/' + list[ i ] + '}}\n';
 	}
-	imp += '\n{' + '{AutoCat}}';
+	imp += '\n{{AutoCat}}';
+	// </nowiki>
 	context.$target.val( imp );
 }
 
