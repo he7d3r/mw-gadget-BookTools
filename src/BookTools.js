@@ -110,12 +110,12 @@ function createList( context ){
 
 function createTemplate( context ){
 	var list = dedupeList( createList( context ) ),
-		predef = '<includeonly>{'+'{{{{|safesubst:}}}Lista de capítulos/{{{1|}}}</includeonly>\n |'
+		predef = '<include' + 'only>{' + '{{{{|safesubst:}}}Lista de capítulos/{{{1|}}}</include' + 'only>\n |'
 			+ list.join( '\n |' )
-			+ '\n<includeonly>}}</includeonly><noinclude>\n'
-			+ '{'+'{Documentação|Predefinição:Lista de capítulos/doc}}\n'
+			+ '\n<include' + 'only>}}</include' + 'only><no' + 'include>\n'
+			+ '{' + '{Documentação|Predefinição:Lista de capítulos/doc}}\n'
 			+ '<!-- ADICIONE CATEGORIAS E INTERWIKIS NA SUBPÁGINA /doc -->\n'
-			+ '</noinclude>';
+			+ '</no' + 'include>';
 	context.$target.val( predef );
 }
 
