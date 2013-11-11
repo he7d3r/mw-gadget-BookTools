@@ -135,7 +135,7 @@ function editPage(page, texto) {
 	)
 	.done(function() {
 		alert( mw.msg( 'bt-page-edited', page.replace( /_/g, ' ' ) ) );
-		location.href = mw.util.wikiGetlink( page );
+		location.href = mw.util.getUrl( page );
 	})
 	.fail(function() {
 		alert( mw.msg( 'bt-page-not-edited', page.replace( /_/g, ' ' ) ) );
