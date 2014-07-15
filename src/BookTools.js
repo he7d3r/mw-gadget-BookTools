@@ -213,7 +213,7 @@ function load(){
 }
 
 if( mw.config.get( 'wgDBname' ) === 'ptwikibooks' && mw.config.get( 'wgAction' ) === 'edit' && mw.config.get( 'wgNamespaceNumber' ) === 0 ){
-	$.getScript( '//pt.wikibooks.org/w/index.php?title=User:Helder.wiki/Tools/Pathoschild/TemplateScript.js&action=raw&ctype=text/javascript&smaxage=21600&maxage=86400', load );
+	$.getScript( '//pt.wikibooks.org/w/index.php?title=User:Helder.wiki/Tools/Pathoschild/TemplateScript.js&action=raw&ctype=text/javascript', load );
 }
 
 }( mediaWiki, jQuery ) );
