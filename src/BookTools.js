@@ -1,8 +1,7 @@
 /**
  * BookTools
  * Adds helper tools to the sidebar for working with books
- * @author: Helder (https://github.com/he7d3r)
- * @license: CC BY-SA 3.0 <https://creativecommons.org/licenses/by-sa/3.0/>
+ * @author: [[User:Helder.wiki]]
  * @tracking: [[Special:GlobalUsage/User:Helder.wiki/Tools/BookTools.js]] ([[File:User:Helder.wiki/Tools/BookTools.js]])
  */
 /*jslint browser: true, white: true, plusplus: true, devel: true, regexp: true */
@@ -214,7 +213,7 @@ function load(){
 }
 
 if( mw.config.get( 'wgDBname' ) === 'ptwikibooks' && mw.config.get( 'wgAction' ) === 'edit' && mw.config.get( 'wgNamespaceNumber' ) === 0 ){
-	$.getScript('//tools.wmflabs.org/pathoschild-contrib/scripts/pathoschild.templatescript.js', load );
+	$.getScript( '//tools.wmflabs.org/meta/scripts/pathoschild.templatescript.js', load );
 }
 
 }( mediaWiki, jQuery ) );
