@@ -3,7 +3,6 @@
  * Adds helper tools to the sidebar for working with books
  * @author: Helder (https://github.com/he7d3r)
  * @license: CC BY-SA 3.0 <https://creativecommons.org/licenses/by-sa/3.0/>
- * @tracking: [[Special:GlobalUsage/User:Helder.wiki/Tools/BookTools.js]] ([[File:User:Helder.wiki/Tools/BookTools.js]])
  */
 /*jslint browser: true, white: true, plusplus: true, devel: true, regexp: true */
 /*global jQuery, mediaWiki, pathoschild */
