@@ -4,9 +4,7 @@
  * @author: Helder (https://github.com/he7d3r)
  * @license: CC BY-SA 3.0 <https://creativecommons.org/licenses/by-sa/3.0/>
  */
-/*jslint browser: true, white: true, plusplus: true, devel: true, regexp: true */
-/*global jQuery, mediaWiki, pathoschild */
-( function ( mw, $ ) {
+( function ( mw, $, pathoschild ) {
 'use strict';
 
 mw.messages.set( {
@@ -216,4 +214,4 @@ if( mw.config.get( 'wgDBname' ) === 'ptwikibooks' && mw.config.get( 'wgAction' )
 	$.getScript( '//tools.wmflabs.org/meta/scripts/pathoschild.templatescript.js', load );
 }
 
-}( mediaWiki, jQuery ) );
+}( mediaWiki, jQuery, pathoschild ) );
