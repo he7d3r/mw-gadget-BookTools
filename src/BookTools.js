@@ -4,7 +4,7 @@
  * @author: Helder (https://github.com/he7d3r)
  * @license: CC BY-SA 3.0 <https://creativecommons.org/licenses/by-sa/3.0/>
  */
-( function ( mw, $, pathoschild ) {
+( function ( mw, $ ) {
 	'use strict';
 
 	mw.messages.set( {
@@ -214,4 +214,4 @@
 		$.getScript( '//tools.wmflabs.org/meta/scripts/pathoschild.templatescript.js', load );
 	}
 
-}( mediaWiki, jQuery, pathoschild ) );
+}( mediaWiki, jQuery ) );
