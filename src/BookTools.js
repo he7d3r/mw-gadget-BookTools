@@ -211,7 +211,18 @@
 	}
 
 	if ( mw.config.get( 'wgDBname' ) === 'ptwikibooks' && mw.config.get( 'wgAction' ) === 'edit' && mw.config.get( 'wgNamespaceNumber' ) === 0 ) {
-		$.getScript( '//tools.wmflabs.org/meta/scripts/pathoschild.templatescript.js', load );
+		/**
+		 * TemplateScript adds configurable templates and scripts to the sidebar, and adds an example regex editor.
+		 * @see https://meta.wikimedia.org/wiki/TemplateScript
+		 * @update-token [[File:pathoschild/templatescript.js]]
+		 */
+		$.ajax(
+			'//tools-static.wmflabs.org/meta/scripts/pathoschild.templatescript.js',
+			{
+				dataType:'script',
+				cache:true
+			}
+		).then( load );
 	}
 
 }( mediaWiki, jQuery ) );
