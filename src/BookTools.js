@@ -29,12 +29,7 @@
 	} );
 
 	var bookName = mw.config.get( 'wgPageName' ).replace(/_/g, ' '),
-		reLinkCap = new RegExp(
-			'.*\\[\\[\\s*(?:/([^\\|\\]]+?)/?|' +
-				$.escapeRE( bookName ) +
-				'/([^\\|\\]]+?))\\s*(?:(?:#[^\\|\\]]+?)?\\|\\s*[^\\]]+?\\s*)?\\]\\].*',
-			'gi'
-		);
+		reLinkCap;
 	// Adaptação de um script de Paul Galloway (http://www.synergyx.com)
 	function dedupeList( items ) {
 		var i, l,
@@ -186,6 +181,12 @@
 		}
 	}
 	function load() {
+		reLinkCap = new RegExp(
+			'.*\\[\\[\\s*(?:/([^\\|\\]]+?)/?|' +
+				mw.RegExp.escape( bookName ) +
+				'/([^\\|\\]]+?))\\s*(?:(?:#[^\\|\\]]+?)?\\|\\s*[^\\]]+?\\s*)?\\]\\].*',
+			'gi'
+		);
 		pathoschild.TemplateScript.AddWith({
 			forActions: 'edit',
 			category: mw.msg( 'bt-sidebar-title' )
@@ -216,12 +217,15 @@
 		 * @see https://meta.wikimedia.org/wiki/TemplateScript
 		 * @update-token [[File:pathoschild/templatescript.js]]
 		 */
-		$.ajax(
-			'//tools-static.wmflabs.org/meta/scripts/pathoschild.templatescript.js',
-			{
-				dataType:'script',
-				cache:true
-			}
+		$.when(
+			mediawiki.RegExp,
+			$.ajax(
+				'//tools-static.wmflabs.org/meta/scripts/pathoschild.templatescript.js',
+				{
+					dataType:'script',
+					cache:true
+				}
+			)
 		).then( load );
 	}
 
