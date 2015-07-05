@@ -218,7 +218,7 @@
 		 * @update-token [[File:pathoschild/templatescript.js]]
 		 */
 		$.when(
-			mediawiki.RegExp,
+			mw.loader.using( 'mediawiki.RegExp' ),
 			$.ajax(
 				'//tools-static.wmflabs.org/meta/scripts/pathoschild.templatescript.js',
 				{
