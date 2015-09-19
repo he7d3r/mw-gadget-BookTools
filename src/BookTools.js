@@ -187,8 +187,7 @@
 				'/([^\\|\\]]+?))\\s*(?:(?:#[^\\|\\]]+?)?\\|\\s*[^\\]]+?\\s*)?\\]\\].*',
 			'gi'
 		);
-		pathoschild.TemplateScript.AddWith({
-			forActions: 'edit',
+		pathoschild.TemplateScript.add({
 			category: mw.msg( 'bt-sidebar-title' )
 		}, [{
 			name: mw.msg( 'bt-create-template-desc' ),
