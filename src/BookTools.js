@@ -2,6 +2,7 @@
  * BookTools
  * Adds helper tools to the sidebar for working with books
  * @author: Helder (https://github.com/he7d3r)
+ * @update-token: [[File:pathoschild/templatescript.js]]
  * @license: CC BY-SA 3.0 <https://creativecommons.org/licenses/by-sa/3.0/>
  */
 ( function ( mw, $ ) {
@@ -215,6 +216,7 @@
 		 * TemplateScript adds configurable templates and scripts to the sidebar, and adds an example regex editor.
 		 * @see https://meta.wikimedia.org/wiki/TemplateScript
 		 * @update-token [[File:pathoschild/templatescript.js]]
+		 * @preserve
 		 */
 		$.when(
 			mw.loader.using( 'mediawiki.RegExp' ),
