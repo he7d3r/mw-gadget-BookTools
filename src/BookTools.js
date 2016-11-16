@@ -56,8 +56,8 @@
 		return newlist;
 	}
 
-	function createAutoNav( context ) {
-		var list = context.$target.val().split('\n'),
+	function createAutoNav( editor ) {
+		var list = editor.get().split('\n'),
 			previous = [],
 			next = [],
 			i;
@@ -70,7 +70,7 @@
 			next[i] = list[i] + '=[[' + list[i + 1] + ']]';
 		}
 
-		context.$target.val([
+		editor.set( [
 			list.join('\n'),
 			previous.join('\n'),
 			next.join('\n')
@@ -86,10 +86,10 @@
 		return false;
 	}
 
-	function createList( context ) {
+	function createList( editor ) {
 		var i, cap,
 			list = [],
-			lines = context.$target.val()
+			lines = editor.get()
 				.replace( /<!--[\s\S]+?-->/g, '' )
 				.split( /[\r\n]+/ );
 		// lines = lines.slice( 1, lines.length - 1 );
@@ -102,9 +102,9 @@
 		return list;
 	}
 
-	function createTemplate( context ) {
+	function createTemplate( editor ) {
 		// <nowiki>
-		var list = dedupeList( createList( context ) ),
+		var list = dedupeList( createList( editor ) ),
 			predef = '<includeonly>{{{{{|safesubst:}}}Lista de capítulos/{{{1|}}}</includeonly>\n |'
 				+ list.join( '\n |' )
 				+ '\n<includeonly>}}</includeonly><noinclude>\n'
@@ -112,7 +112,7 @@
 				+ '<!-- ADICIONE CATEGORIAS E INTERWIKIS NA SUBPÁGINA /doc -->\n'
 				+ '</noinclude>';
 		// </nowiki>
-		context.$target.val( predef );
+		editor.set( predef );
 	}
 
 	// Baseado em [[w:en:WP:WikiProject User scripts/Guide/Ajax#Edit a page and other common actions]]
@@ -136,9 +136,9 @@
 		});
 	}
 
-	function createCollectionPage( context ) {
+	function createCollectionPage( editor ) {
 		var i, pos,
-			list = dedupeList( createList( context ) ),
+			list = dedupeList( createList( editor ) ),
 			col = '{' + '{Livro gravado\n |título={' +
 				'{subst:SUBPAGENAME}}\n |subtítulo=\n |imagem da capa=\n' +
 				' |cor da capa=\n}}\n\n== ' + bookName + ' ==\n';
@@ -147,13 +147,13 @@
 			col += ':[[' + bookName + '/' + list[ i ] + '|'
 				+ list[ i ].substring( pos ) + ']]\n';
 		}
-		context.$target.val( col );
+		editor.set( col );
 	}
 
-	function createPrintVersion( context ) {
+	function createPrintVersion( editor ) {
 		var i, pos,
 			// <nowiki>
-			list = dedupeList( createList( context ) ),
+			list = dedupeList( createList( editor ) ),
 			imp = '{{Versão para impressão|{{BASEPAGENAME}}|{{BASEPAGENAME}}/Imprimir}}\n';
 		for ( i = 0; i < list.length; i++) {
 			pos = list[ i ].lastIndexOf('/') + 1;
@@ -162,20 +162,20 @@
 		}
 		imp += '\n{{AutoCat}}';
 		// </nowiki>
-		context.$target.val( imp );
+		editor.set( imp );
 	}
 
-	function saveChaptersList( context ) {
+	function saveChaptersList( editor ) {
 		var r, listPage = 'Predefinição:Lista_de_capítulos/' + mw.config.get( 'wgPageName' ),
-			texto = context.$target.val();
+			texto = editor.get();
 		r = confirm( mw.msg( 'bt-check-list' ) );
 		if (r === true) {
 			editPage(listPage, texto);
 		}
 	}
-	function saveCollection( context ) {
+	function saveCollection( editor ) {
 		var r, collectionPage = 'Wikilivros:Livros/' + mw.config.get( 'wgPageName' ),
-			texto = context.$target.val();
+			texto = editor.get();
 		r = confirm( mw.msg( 'bt-check-list-for-collection' ) );
 		if (r === true) {
 			editPage(collectionPage, texto);
@@ -188,9 +188,7 @@
 				'/([^\\|\\]]+?))\\s*(?:(?:#[^\\|\\]]+?)?\\|\\s*[^\\]]+?\\s*)?\\]\\].*',
 			'gi'
 		);
-		pathoschild.TemplateScript.add({
-			category: mw.msg( 'bt-sidebar-title' )
-		}, [{
+		pathoschild.TemplateScript.add( [ {
 			name: mw.msg( 'bt-create-template-desc' ),
 			script: createTemplate
 		}, {
@@ -208,7 +206,9 @@
 		}, {
 			name: mw.msg( 'bt-create-autonav-desc' ),
 			script: createAutoNav
-		}]);
+		} ], {
+			category: mw.msg( 'bt-sidebar-title' )
+		} );
 	}
 
 	if ( mw.config.get( 'wgDBname' ) === 'ptwikibooks' && mw.config.get( 'wgAction' ) === 'edit' && mw.config.get( 'wgNamespaceNumber' ) === 0 ) {
