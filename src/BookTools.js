@@ -37,7 +37,7 @@
 			count = 0,
 			newlist = [],
 			hash = {};
-		if ( !$.isArray( items ) ) {
+		if ( !Array.isArray( items ) ) {
 			return;
 		}
 		for ( i = 0, l = items.length; i < l; i++ ) {
