@@ -184,7 +184,7 @@
 	function load() {
 		reLinkCap = new RegExp(
 			'.*\\[\\[\\s*(?:/([^\\|\\]]+?)/?|' +
-				mw.RegExp.escape( bookName ) +
+				mw.util.escapeRegExp( bookName ) +
 				'/([^\\|\\]]+?))\\s*(?:(?:#[^\\|\\]]+?)?\\|\\s*[^\\]]+?\\s*)?\\]\\].*',
 			'gi'
 		);
@@ -219,7 +219,7 @@
 		 * @preserve
 		 */
 		$.when(
-			mw.loader.using( 'mediawiki.RegExp' ),
+			mw.loader.using( 'mediawiki.util' ),
 			$.ajax(
 				'//tools-static.wmflabs.org/meta/scripts/pathoschild.templatescript.js',
 				{
