@@ -124,7 +124,7 @@
 				title: page,
 				text: texto,
 				summary: mw.msg( 'bt-create-list-summary', mw.config.get( 'wgBookName' ) ),
-				token: mw.user.tokens.get( 'editToken' )
+				token: mw.user.tokens.get( 'csrfToken' )
 			}
 		)
 		.done(function () {
